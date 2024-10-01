@@ -1,0 +1,20 @@
+name: Clone os submódulos
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout CS_Components Repository
+        uses: actions/checkout@v4
+        with:
+          repository: CS-CONSOFT/CS_Components  # Nome do repositório
+          token: ${{ secrets.ACCESS_TOKEN_GITHUB }}  # Token de acesso, caso o repositório seja privado
+          path: cs_components  # Diretório onde o repositório será clonado
+
+      - name: Clone COMPONENTES
+        run: |
+          git clone git@github.com:CS-CONSOFT/CS_Components.git cs_components
+
