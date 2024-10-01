@@ -34,7 +34,6 @@ jobs:
         with:
           repository: CS-CONSOFT/CS_Icorp_Vue  # Nome do repositório
           token: ${{ secrets.ACCESS_TOKEN_GITHUB }}  # Token de acesso, caso o repositório seja privado
-          path: ${{env.NOME_PASTA}}  # Diretório onde o repositório será clonado
           ref: ${{github.event.inputs.branch_icorp}}  # Especifica a branch a ser usada
 
 
