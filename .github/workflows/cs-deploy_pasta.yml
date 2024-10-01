@@ -15,6 +15,11 @@
 name: Gera a pasta do projeto
 on:
   workflow_dispatch:
+    inputs:
+      branch_icorp:
+        description: 'Nome da branch para se fazer o checkout do projeto CS-IcorpVue'
+        required: true
+        default: 'dev'  
 
 env:
   NOME_PASTA: 'CS_Icorp_Tabelas-Yaml'  
@@ -30,6 +35,7 @@ jobs:
           repository: CS-CONSOFT/CS_Icorp_Vue  # Nome do repositório
           token: ${{ secrets.ACCESS_TOKEN_GITHUB }}  # Token de acesso, caso o repositório seja privado
           path: ${{env.NOME_PASTA}}  # Diretório onde o repositório será clonado
+          ref: ${{github.event.inputs.branch_icorp}}  # Especifica a branch a ser usada
 
 
       - name: 02-Instalando SSH Client 
