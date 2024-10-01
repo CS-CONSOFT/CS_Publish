@@ -15,11 +15,7 @@
 name: Gera sub modulos
 on:
   workflow_dispatch:
-    inputs:
-      branch_icorp:
-        description: 'Nome da branch para se fazer o checkout do projeto CS-IcorpVue'
-        required: true
-        default: 'principal'  
+
 
 env:
   NOME_PASTA: 'CS_Icorp_Tabelas-01'  

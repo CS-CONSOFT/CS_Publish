@@ -33,7 +33,7 @@ on:
 
 env:
   VITE_API_URL: ''  
-  NOME_PASTA: 'CS_Icorp_Tabelas-Yaml'  
+  NOME_PASTA: 'CS_Icorp_Tabelas-01'  
   PORTA: ''
 
 # Definição dos jobs que o workflow irá executar
