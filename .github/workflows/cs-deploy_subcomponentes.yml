@@ -1,0 +1,86 @@
+# Objetivo: efetuar deploy do produto CS-Icorp Tabelas nos ambientes de homologação e produção
+# Os ambientes de produção são diversos, ex. app1, app3, app4, etc...
+# A URL Base que será consumida é diferente para cada ambiente. Ex. https://app1.csicorpnet.com.br; https://app3.csicorpnet.com.br, etc...
+# Para atender esse requisito, definimos o ambiente que será passado. Ex. dev, prod, etc...
+# Esses identificadores serão responsáveis por rotear a URL base de acordo com o ambiente desejado
+# O mapeamento da URL se dá da seguinte maneira atualmente:
+
+# dev aponta para       -> https://dsv17.csicorpnet.com.br
+# prod_app1 aponta para -> https://app1.csicorpnet.com.br
+# prod_app3 aponta para -> https://app3.csicorpnet.com.br
+# prod_app4 aponta para -> https://app4.csicorpnet.com.br
+
+# Por fim, a versão deve ser fornecida, sendo ela o valor de versão do projeto. 
+
+name: Gera a pasta do projeto
+on:
+  workflow_dispatch:
+    inputs:
+      branch_icorp:
+        description: 'Nome da branch para se fazer o checkout do projeto CS-IcorpVue'
+        required: true
+        default: 'principal'  
+
+env:
+  NOME_PASTA: 'CS_Icorp_Tabelas-01'  
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest 
+
+    steps:
+      - name: 01-Instalando SSH Client 
+        run: sudo apt-get install openssh-client -y 
+
+      - name: 02-Configurando SSH Access 
+        run: |
+          mkdir -p ~/.ssh 
+          echo "${{ secrets.AWS_EC2_KEY_PAIR }}" > ~/.ssh/aws_ec2_key 
+          chmod 600 ~/.ssh/aws_ec2_key 
+          ssh-keyscan -H ${{ secrets.AWS_EC2_INSTANCE_IP }} >> ~/.ssh/known_hosts 
+          echo "StrictHostKeyChecking no" > ~/.ssh/config 
+
+      - name: 03 - Mudando para repositorio dos componentes
+        uses: actions/checkout@v4
+        with:
+          repository: CS-CONSOFT/CS_Components  # Nome do repositório
+          token: ${{ secrets.ACCESS_TOKEN_GITHUB }}  # Token de acesso, caso o repositório seja privado
+          path: cs_components  # Diretório onde o repositório será clonado
+
+      - name: 04-Deletando pasta componentes
+        run: |
+          ssh -i ~/.ssh/aws_ec2_key ubuntu@${{ secrets.AWS_EC2_INSTANCE_IP }} "rm -rf /home/ubuntu/${{env.NOME_PASTA}}/src/submodules/cs_components"
+
+     # Cria uma nova pasta no EC2 para os componentes clonados
+      - name: 05-Criando pasta para componentes no EC2
+        run: |
+          ssh -i ~/.ssh/aws_ec2_key ubuntu@${{ secrets.AWS_EC2_INSTANCE_IP }} "mkdir -p /home/ubuntu/${{env.NOME_PASTA}}/src/submodules/cs_components"
+
+      # Transfere o conteúdo do repositório CS_Components para o servidor EC2
+      - name: 06-Transferindo componentes para instancia EC2 
+        run: |
+          scp -i ~/.ssh/aws_ec2_key -r cs_components/* ubuntu@${{ secrets.AWS_EC2_INSTANCE_IP }}:/home/ubuntu/${{env.NOME_PASTA}}/src/submodules/cs_components
+
+      - name: 7 - Mudando para repositorio do CRM
+        uses: actions/checkout@v4
+        with:
+          repository: CS-CONSOFT/CS_Icorp_CRM  # Nome do repositório
+          token: ${{ secrets.ACCESS_TOKEN_GITHUB }}  # Token de acesso, caso o repositório seja privado
+          path: cs_crm  # Diretório onde o repositório será clonado
+
+      - name: 8-Deletando pasta crm
+        run: |
+          ssh -i ~/.ssh/aws_ec2_key ubuntu@${{ secrets.AWS_EC2_INSTANCE_IP }} "rm -rf /home/ubuntu/${{env.NOME_PASTA}}/src/submodules/crm"
+
+     # Cria uma nova pasta no EC2 para os componentes clonados
+      - name: 9-Criando pasta para crm no EC2
+        run: |
+          ssh -i ~/.ssh/aws_ec2_key ubuntu@${{ secrets.AWS_EC2_INSTANCE_IP }} "mkdir -p /home/ubuntu/${{env.NOME_PASTA}}/src/submodules/crm"
+
+      # Transfere o conteúdo do repositório CS_Components para o servidor EC2
+      - name: 10-Transferindo crm para instancia EC2 
+        run: |
+          scp -i ~/.ssh/aws_ec2_key -r cs_crm/* ubuntu@${{ secrets.AWS_EC2_INSTANCE_IP }}:/home/ubuntu/${{env.NOME_PASTA}}/src/submodules/crm    
+
+
+  
