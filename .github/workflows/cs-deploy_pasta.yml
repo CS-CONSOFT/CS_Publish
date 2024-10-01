@@ -22,7 +22,7 @@ on:
         default: 'dev'  
 
 env:
-  NOME_PASTA: 'CS_Icorp_Tabelas-Yaml'  
+  NOME_PASTA: 'CS_Icorp_Tabelas-01'  
 
 jobs:
   deploy:
