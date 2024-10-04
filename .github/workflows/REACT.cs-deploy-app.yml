@@ -70,7 +70,7 @@ jobs:
       - name: Upload Pacote
         uses: actions/upload-artifact@v3
         with:
-          name: cs-pvmobile
+          name: cs-pvmobile-${{github.event.inputs.versionCode}}:${{github.event.inputs.versionName}}
           path: |
             if [ "${{ github.event.inputs.environment }}" == "prod" ]; then
               android/app/build/outputs/bundle/release/app-release.aab
