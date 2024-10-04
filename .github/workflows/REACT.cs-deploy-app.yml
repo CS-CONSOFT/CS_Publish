@@ -1,4 +1,4 @@
-name: Gerar pacote PV-Mobile
+name: React - Gerar pacote PV-Mobile
 on:
   workflow_dispatch:
     inputs:
