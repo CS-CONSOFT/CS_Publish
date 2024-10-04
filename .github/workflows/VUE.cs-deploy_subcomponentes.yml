@@ -12,7 +12,7 @@
 
 # Por fim, a versão deve ser fornecida, sendo ela o valor de versão do projeto. 
 
-name: Gera sub modulos
+name: Icorp-Gera sub modulos
 on:
   workflow_dispatch:
 

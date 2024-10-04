@@ -1,0 +1,79 @@
+name: Gerar pacote PV-Mobile
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Escolha o ambiente: dev ou prod'
+        required: true
+        default: 'prod'
+      versionCode:
+        description: 'Código de versão do aplicativo. Ex 6'
+        required: true
+        default: '1' 
+      versionName:
+        description: 'Nome da versão do aplicativo. Ex 0.2.2'
+        required: true
+        default: '0.1.0' 
+
+env:
+  NODE_VERSION: '20.x' 
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Muda para o repositório do CS-IcorpVue
+        uses: actions/checkout@v4
+        with:
+          repository: CS-CONSOFT/cs_app-pv-mobile-react-expo  # Nome do repositório
+          token: ${{ secrets.ACCESS_TOKEN_GITHUB }}  # Token de acesso, caso o repositório seja privado
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Set up JDK 22
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '22'
+
+      - name: Setup Expo CLI
+        run: npm install expo-cli --global
+
+      - name: Install npm dependencies
+        run: npm install
+
+      - name: Give execute permission to gradlew
+        run: chmod +x android/gradlew
+
+      - name: Modificando version.properties
+        run: |
+          echo "Modificando version.properties com novos valores..."
+          sed -i "s/^versionCode=.*/versionCode=${{ github.event.inputs.versionCode }}/" version.properties
+          sed -i "s/^versionName=.*/versionName=${{ github.event.inputs.versionName }}/" version.properties
+
+      - name: Gerar pacote
+        run: |
+          cd android
+          if [ "${{ github.event.inputs.environment }}" == "prod" ]; then
+            ./gradlew bundleRelease
+          else
+            ./gradlew assembleRelease
+          fi
+
+      - name: Upload Pacote
+        uses: actions/upload-artifact@v3
+        with:
+          name: cs-pvmobile
+          path: |
+            if [ "${{ github.event.inputs.environment }}" == "prod" ]; then
+              android/app/build/outputs/bundle/release/app-release.aab
+            else
+              android/app/build/outputs/apk/release/app-release.apk
+            fi

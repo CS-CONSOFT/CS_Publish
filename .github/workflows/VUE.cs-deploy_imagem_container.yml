@@ -13,7 +13,7 @@
 # Por fim, a versão deve ser fornecida, sendo ela o valor de versão do projeto. 
 
 
-name: Deploy da imagem/container do projeto
+name: Icorp-Deploy da imagem/container do projeto
 on:
   workflow_dispatch:
      inputs:
@@ -42,8 +42,11 @@ jobs:
     runs-on: ubuntu-latest # Especifica que o job será executado em um ambiente Ubuntu
 
     steps: # Lista das etapas que serão executadas
-      - name: 01-Checkout Repository # Passo para fazer o checkout do repositório
-        uses: actions/checkout@v2 # Usa a ação oficial do GitHub para fazer o checkout
+      - name: 01-Muda para o repositório do CS-IcorpVue
+        uses: actions/checkout@v4
+        with:
+          repository: CS-CONSOFT/CS_Icorp_Vue  # Nome do repositório
+          token: ${{ secrets.ACCESS_TOKEN_GITHUB }}  # Token de acesso, caso o repositório seja privado
 
       - name: 02-Instalando SSH Client # Passo para instalar o cliente SSH
         run: sudo apt-get install openssh-client -y # Comando para instalar o cliente SSH
