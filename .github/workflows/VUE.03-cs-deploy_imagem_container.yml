@@ -34,6 +34,7 @@ on:
 env:
   VITE_API_URL: ''  
   NOME_PASTA: 'CS_Icorp_Tabelas-01'  
+  VERSION_CODE_PROJECT: ''
   PORTA: ''
 
 # Definição dos jobs que o workflow irá executar
@@ -76,6 +77,12 @@ jobs:
             echo "VITE_API_URL=${{ secrets.DEV_VITE_API_URL }}" >> $GITHUB_ENV # Define a URL para desenvolvimento
             echo "PORTA=8080" >> $GITHUB_ENV
           fi
+
+
+      - name: 04.1-Configura a versao do projeto 
+        id: setup_env_proj
+        run: |
+         echo "VERSION_CODE_PROJECT=${{ github.event.inputs.versao}}" >> $GITHUB_ENV # Define a VERSAO DO PROJETO
 
 
       - name: 05-Gerando imagem no EC2 # Passo para gerar a imagem Docker
