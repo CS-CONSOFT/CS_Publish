@@ -50,6 +50,8 @@ jobs:
         with:
           repository: CS-CONSOFT/CS_Icorp_Vue  # Nome do repositório
           token: ${{ secrets.ACCESS_TOKEN_GITHUB }}  # Token de acesso, caso o repositório seja privado
+          submodules: recursive  # Clona submódulos recursivamente
+          fetch-depth: 0    # Clona todo o histórico para garantir que os commits completos estejam disponíveis
 
       - name: 02-Instalando SSH Client # Passo para instalar o cliente SSH
         run: sudo apt-get install openssh-client -y # Comando para instalar o cliente SSH
@@ -125,9 +127,9 @@ jobs:
             cd /home/ubuntu/${{env.NOME_PASTA}} && 
 
           if [ "${{ github.event.inputs.primeiro_container }}" == "true" ]; then
-            (sudo docker run --name csct-tabelas_${{ github.event.inputs.ambiente }} --restart=always -d -p ${{env.PORTA}}:80 ${{ steps.meta.outputs.tags }})
+            (sudo docker run --name csct-tabelas_${{ github.event.inputs.ambiente }} --restart=always -d -p ${{env.PORTA}}:80 -e VITE_API_URL=${{ env.VITE_API_URL }} ${{ steps.meta.outputs.tags }})
           else
-            (sudo docker stop csct-tabelas_${{ github.event.inputs.ambiente }}; sudo docker rm -f csct-tabelas_${{ github.event.inputs.ambiente }}; sudo docker run --name csct-tabelas_${{ github.event.inputs.ambiente }} --restart=always -d -p ${{env.PORTA}}:80 ${{ steps.meta.outputs.tags }})
+            (sudo docker stop csct-tabelas_${{ github.event.inputs.ambiente }}; sudo docker rm -f csct-tabelas_${{ github.event.inputs.ambiente }}; sudo docker run --name csct-tabelas_${{ github.event.inputs.ambiente }} --restart=always -d -p ${{env.PORTA}}:80 -e VITE_API_URL=${{ env.VITE_API_URL }} ${{ steps.meta.outputs.tags }})
           fi
           "
   
