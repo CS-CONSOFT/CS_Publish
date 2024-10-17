@@ -107,8 +107,8 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ github.event.inputs.ambiente }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ github.event.inputs.ambiente }}
 
       - name: 04.2-Configurando credenciais
         run: |
