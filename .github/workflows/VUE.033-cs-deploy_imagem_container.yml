@@ -102,39 +102,14 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
     
-
-      - name: Autenticando no Github Container Registry
-        run: |
-            echo "${{ secrets.ACCESS_TOKEN_GITHUB }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-
       - name: Build and push Docker image
-        id: push
-        uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
-        with:
-          context: .
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-
-
-      - name: 05-Baixando a imagem # Passo para gerar a imagem Docker
         run: |
-          ssh -i ~/.ssh/aws_ec2_key ubuntu@${{ secrets.AWS_EC2_INSTANCE_IP }} "
-            cd /home/ubuntu/${{env.NOME_PASTA}} && 
-            sudo docker pull ${{ steps.meta.outputs.tags }}
-          "
+            docker login --username valtecsgabriel --password ${{ secrets.ACCESS_TOKEN_GITHUB }} ghcr.io
+            docker build . --tag ghcr.io/valtecsgabriel/csicorp:latest
+            docker push ghcr.io/valtecsgabriel/csicorp:latest
+          
 
-      - name: 06-Gerando container o Containers on EC2
-        run: |
-          ssh -i ~/.ssh/aws_ec2_key ubuntu@${{ secrets.AWS_EC2_INSTANCE_IP }} "
-            cd /home/ubuntu/${{env.NOME_PASTA}} && 
 
-          if [ "${{ github.event.inputs.primeiro_container }}" == "true" ]; then
-            (sudo docker run --name csct-tabelas_${{ github.event.inputs.ambiente }} --restart=always -d -p ${{env.PORTA}}:80 -e VITE_API_URL=${{ env.VITE_API_URL }} ${{ steps.meta.outputs.tags }})
-          else
-            (sudo docker stop csct-tabelas_${{ github.event.inputs.ambiente }}; sudo docker rm -f csct-tabelas_${{ github.event.inputs.ambiente }}; sudo docker run --name csct-tabelas_${{ github.event.inputs.ambiente }} --restart=always -d -p ${{env.PORTA}}:80 -e VITE_API_URL=${{ env.VITE_API_URL }} ${{ steps.meta.outputs.tags }})
-          fi
-          "
   
 # sudo docker stop csct-tabelas_; sudo docker rm -f csct-tabelas; 
 # (sudo docker stop csct-tabelas_; sudo docker rm -f csct-tabelas_; sudo docker run --name csct-tabelas_ --restart=always -d -p csim-tabelas_:80 csim-tabelas_)
