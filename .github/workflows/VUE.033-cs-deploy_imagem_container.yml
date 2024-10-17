@@ -108,7 +108,7 @@ jobs:
           context: .
           push: true
           tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ github.event.inputs.ambiente }}
+          labels: ${{ steps.meta.outputs.labels }}
 
       - name: 04.2-Configurando credenciais
         run: |
@@ -118,9 +118,9 @@ jobs:
         run: |
           ssh -i ~/.ssh/aws_ec2_key ubuntu@${{ secrets.AWS_EC2_INSTANCE_IP }} "
             cd /home/ubuntu/${{ env.NOME_PASTA }} && if [ \"${{ github.event.inputs.primeiro_container }}\" == \"true\" ]; then 
-              sudo docker run --name csct-tabelas_${{ github.event.inputs.ambiente }} --restart=always -d -p ${{ env.PORTA }}:80 -e VITE_API_URL=${{ env.VITE_API_URL }} ${{ github.event.inputs.ambiente }}; 
+              sudo docker run --name csct-tabelas_${{ github.event.inputs.ambiente }} --restart=always -d -p ${{ env.PORTA }}:80 -e VITE_API_URL=${{ env.VITE_API_URL }} ${{ steps.meta.outputs.tags }}; 
             else 
-              sudo docker stop csct-tabelas_${{ github.event.inputs.ambiente }} && sudo docker rm -f csct-tabelas_${{ github.event.inputs.ambiente }} && sudo docker run --name csct-tabelas_${{ github.event.inputs.ambiente }} --restart=always -d -p ${{ env.PORTA }}:80 -e VITE_API_URL=${{ env.VITE_API_URL }} ${{ github.event.inputs.ambiente }}; 
+              sudo docker stop csct-tabelas_${{ github.event.inputs.ambiente }} && sudo docker rm -f csct-tabelas_${{ github.event.inputs.ambiente }} && sudo docker run --name csct-tabelas_${{ github.event.inputs.ambiente }} --restart=always -d -p ${{ env.PORTA }}:80 -e VITE_API_URL=${{ env.VITE_API_URL }} ${{ steps.meta.outputs.tags }}; 
             fi
           "
 
