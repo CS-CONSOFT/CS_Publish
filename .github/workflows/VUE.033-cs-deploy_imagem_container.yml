@@ -13,7 +13,7 @@
 # Por fim, a versão deve ser fornecida, sendo ela o valor de versão do projeto. 
 
 
-name: Vue.02-Icorp-Deploy da imagem/container do projeto
+name: Vue.33s-Icorp-Deploy da imagem/container do projeto
 on:
   workflow_dispatch:
      inputs:
