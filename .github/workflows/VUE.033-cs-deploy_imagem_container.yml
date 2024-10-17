@@ -83,14 +83,15 @@ jobs:
           fi
 
       - name: 04.1-Configura a versao do projeto 
-        id: setup_env_proj
         run: |
          echo "VITE_VERSION_CODE_PROJECT=${{ github.event.inputs.versao}}" >> $GITHUB_ENV # Define a VERSAO DO PROJETO
-         echo ${{ secrets.ACCESS_TOKEN_GITHUB }} | docker login ghcr.io -u valtecsgabriel --password-stdin
 
-      
-      
+      - name: 04.2-Configurando credenciais
+        run: |
+          export CR_PAT=${{ secrets.ACCESS_TOKEN_GITHUB }}  
+          echo $CR_PAT | docker login ghcr.io -u valtecsgabriel --password-stdin
 
+    
         # Uses the `docker/login-action` action to log in to the Container registry registry using the account and password that will publish the packages. Once published, the packages are scoped to the account defined here.
       - name: Log in to the Container registry
         uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
@@ -106,10 +107,13 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
     
       - name: Build and push Docker image
-        run: |
-            docker login --username valtecsgabriel --password ${{ secrets.ACCESS_TOKEN_GITHUB }} ghcr.io
-            docker build . --tag ghcr.io/valtecsgabriel/csicorp:latest
-            docker push ghcr.io/valtecsgabriel/csicorp:latest
+        id: push
+        uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
           
           
 
