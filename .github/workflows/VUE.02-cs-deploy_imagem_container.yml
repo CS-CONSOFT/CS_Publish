@@ -111,3 +111,4 @@ jobs:
   
 # sudo docker stop csct-tabelas_; sudo docker rm -f csct-tabelas; 
 # (sudo docker stop csct-tabelas_; sudo docker rm -f csct-tabelas_; sudo docker run --name csct-tabelas_ --restart=always -d -p csim-tabelas_:80 csim-tabelas_)
+#ss
