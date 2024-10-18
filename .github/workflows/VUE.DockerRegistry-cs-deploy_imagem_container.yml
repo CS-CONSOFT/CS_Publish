@@ -13,7 +13,7 @@
 # Por fim, a versão deve ser fornecida, sendo ela o valor de versão do projeto. 
 
 
-name: Vue.33s-Icorp-Deploy da imagem/container do projeto
+name: VUE.DockerRegistry-Icorp-Deploy da imagem/container do projeto
 on:
   workflow_dispatch:
      inputs:
@@ -117,7 +117,7 @@ jobs:
       - name: 06-Gerando container no EC2
         run: |
           ssh -i ~/.ssh/aws_ec2_key ubuntu@${{ secrets.AWS_EC2_INSTANCE_IP }} "
-            cd /home/ubuntu/${{ env.NOME_PASTA }} && if [ \"${{ github.event.inputs.primeiro_container }}\" == \"true\" ]; then 
+            if [ \"${{ github.event.inputs.primeiro_container }}\" == \"true\" ]; then 
               sudo docker run --name csct-tabelas_${{ github.event.inputs.ambiente }} --restart=always -d -p ${{ env.PORTA }}:80 -e VITE_API_URL=${{ env.VITE_API_URL }} ${{ steps.meta.outputs.tags }}; 
             else 
               sudo docker stop csct-tabelas_${{ github.event.inputs.ambiente }} && sudo docker rm -f csct-tabelas_${{ github.event.inputs.ambiente }} && sudo docker run --name csct-tabelas_${{ github.event.inputs.ambiente }} --restart=always -d -p ${{ env.PORTA }}:80 -e VITE_API_URL=${{ env.VITE_API_URL }} ${{ steps.meta.outputs.tags }}; 
