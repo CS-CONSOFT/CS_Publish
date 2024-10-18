@@ -97,7 +97,7 @@ jobs:
             sudo docker build -t csim-tabelas_${{github.event.inputs.ambiente}}_${{github.event.inputs.versao}} .
           "
 
-      - name: 06-Gerando container o Containers on EC2
+      - name: 06-Gerando container o Containers on EC2 com ARGS
         run: |
           ssh -i ~/.ssh/aws_ec2_key ubuntu@${{ secrets.AWS_EC2_INSTANCE_IP }} "
             cd /home/ubuntu/${{env.NOME_PASTA}} && 
