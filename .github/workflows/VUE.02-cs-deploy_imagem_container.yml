@@ -29,6 +29,10 @@ on:
         description: 'Seta se é a primeira vez gerando o container. Deve ser true ou false'
         required: true
         default: 'false'  
+      branch:
+        description: 'Branch para rodar o projeto'
+        required: true
+        default: 'cs-homl'  
 
 
 env:
@@ -48,6 +52,7 @@ jobs:
         with:
           repository: CS-CONSOFT/CS_Icorp_Vue  # Nome do repositório
           token: ${{ secrets.ACCESS_TOKEN_GITHUB }}  # Token de acesso, caso o repositório seja privado
+          ref: ${{github.event.inputs.branch}}
 
       - name: 02-Instalando SSH Client # Passo para instalar o cliente SSH
         run: sudo apt-get install openssh-client -y # Comando para instalar o cliente SSH
@@ -89,7 +94,7 @@ jobs:
         run: |
           ssh -i ~/.ssh/aws_ec2_key ubuntu@${{ secrets.AWS_EC2_INSTANCE_IP }} "
             cd /home/ubuntu/${{env.NOME_PASTA}} && 
-            sudo docker build --build-arg VITE_API_URL=${{ env.VITE_API_URL }} -t csim-tabelas_${{github.event.inputs.ambiente}}_${{github.event.inputs.versao}} .
+            sudo docker build -t csim-tabelas_${{github.event.inputs.ambiente}}_${{github.event.inputs.versao}} .
           "
 
       - name: 06-Gerando container o Containers on EC2
@@ -98,9 +103,9 @@ jobs:
             cd /home/ubuntu/${{env.NOME_PASTA}} && 
 
           if [ "${{ github.event.inputs.primeiro_container }}" == "true" ]; then
-            (sudo docker run --name csct-tabelas_${{ github.event.inputs.ambiente }} --restart=always -d -p ${{env.PORTA}}:80 csim-tabelas_${{github.event.inputs.ambiente}}_${{github.event.inputs.versao}})
+           \ (sudo docker run --name csct-tabelas_${{ github.event.inputs.ambiente }} --restart=always -d -p ${{env.PORTA}}:80 csim-tabelas_${{github.event.inputs.ambiente}}_${{github.event.inputs.versao}}
           else
-            (sudo docker stop csct-tabelas_${{ github.event.inputs.ambiente }}; sudo docker rm -f csct-tabelas_${{ github.event.inputs.ambiente }}; sudo docker run --name csct-tabelas_${{ github.event.inputs.ambiente }} --restart=always -d -p ${{env.PORTA}}:80 csim-tabelas_${{github.event.inputs.ambiente}}_${{github.event.inputs.versao}})
+            (sudo docker stop csct-tabelas_${{ github.event.inputs.ambiente }}; sudo docker rm -f csct-tabelas_${{ github.event.inputs.ambiente }}; sudo docker run -e VITE_API_URL=${{env.VITE_API_URL}} --name csct-tabelas_${{ github.event.inputs.ambiente }} --restart=always -d -p ${{env.PORTA}}:80 csim-tabelas_${{github.event.inputs.ambiente}}_${{github.event.inputs.versao}})
           fi
           "
   
