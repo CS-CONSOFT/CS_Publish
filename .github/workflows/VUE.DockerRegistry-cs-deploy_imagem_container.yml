@@ -107,7 +107,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{env.REGISTRY}}/${{ github.repository }}:${{ github.event.inputs.ambiente }}-${{ github.event.inputs.versao }}
+          tags: ${{env.REGISTRY}}/${{ github.event.inputs.ambiente }}-${{ github.event.inputs.versao }}
           labels: ${{ steps.meta.outputs.labels }}
 
       - name: 04.2-Configurando credenciais
