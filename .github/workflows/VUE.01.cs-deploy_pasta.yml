@@ -12,7 +12,7 @@
 
 # Por fim, a versão deve ser fornecida, sendo ela o valor de versão do projeto. 
 
-name: Vue.01-Icorp-Gera a pasta do projeto
+name: Vue.01-Gera a pasta do projeto
 on:
   workflow_dispatch:
     inputs:
