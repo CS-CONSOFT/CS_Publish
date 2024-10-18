@@ -91,18 +91,18 @@ jobs:
         run: |
           ssh -i ~/.ssh/aws_ec2_key ubuntu@${{ secrets.AWS_EC2_INSTANCE_IP }} "
             cd /home/ubuntu/${{env.NOME_PASTA}} && 
-            sudo docker build -t csim-tabelas_${{github.event.inputs.ambiente}}_${{github.event.inputs.versao}} .
+            sudo docker build --build-arg VITE_API_URL=${{ env.VITE_API_URL }} -t csim-tabelas_${{github.event.inputs.ambiente}}_${{github.event.inputs.versao}} .
           "
-          
+
       - name: 06-Gerando container o Containers on EC2
         run: |
           ssh -i ~/.ssh/aws_ec2_key ubuntu@${{ secrets.AWS_EC2_INSTANCE_IP }} "
             cd /home/ubuntu/${{env.NOME_PASTA}} && 
 
           if [ "${{ github.event.inputs.primeiro_container }}" == "true" ]; then
-            (sudo docker run -e VITE_API_URL=${{ env.VITE_API_URL }} --name csct-tabelas_${{ github.event.inputs.ambiente }} --restart=always -d -p ${{env.PORTA}}:80 csim-tabelas_${{github.event.inputs.ambiente}}_${{github.event.inputs.versao}})
+            (sudo docker run --name csct-tabelas_${{ github.event.inputs.ambiente }} --restart=always -d -p ${{env.PORTA}}:80 csim-tabelas_${{github.event.inputs.ambiente}}_${{github.event.inputs.versao}})
           else
-            (sudo docker stop csct-tabelas_${{ github.event.inputs.ambiente }}; sudo docker rm -f csct-tabelas_${{ github.event.inputs.ambiente }}; sudo docker run -e VITE_API_URL=${{ env.VITE_API_URL }} --name csct-tabelas_${{ github.event.inputs.ambiente }} --restart=always -d -p ${{env.PORTA}}:80 csim-tabelas_${{github.event.inputs.ambiente}}_${{github.event.inputs.versao}})
+            (sudo docker stop csct-tabelas_${{ github.event.inputs.ambiente }}; sudo docker rm -f csct-tabelas_${{ github.event.inputs.ambiente }}; sudo docker run --name csct-tabelas_${{ github.event.inputs.ambiente }} --restart=always -d -p ${{env.PORTA}}:80 csim-tabelas_${{github.event.inputs.ambiente}}_${{github.event.inputs.versao}})
           fi
           "
   
