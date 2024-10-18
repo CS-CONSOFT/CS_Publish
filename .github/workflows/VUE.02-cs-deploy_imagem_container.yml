@@ -29,10 +29,7 @@ on:
         description: 'Seta se é a primeira vez gerando o container. Deve ser true ou false'
         required: true
         default: 'false'  
-      branch:
-        description: 'Branch para rodar o projeto'
-        required: true
-        default: 'cs-homl'  
+    
 
 
 env:
