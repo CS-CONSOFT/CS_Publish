@@ -22,7 +22,7 @@ on:
         required: true
         default: 'dev'  
       versao:
-        description: 'Versao do projeto Ex. 2024_09_01. Será o nome da IMAGEM no contexto docker. PRECISA ser minusculo'
+        description: 'Versao do projeto Ex. 2024_09_01. Será o nome da IMAGEM no contexto docker. PRECISA ser minusculo ou numerico'
         required: true
         default: ''  
       primeiro_container:

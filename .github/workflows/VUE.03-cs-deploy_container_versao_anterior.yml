@@ -18,7 +18,7 @@
 # Por fim, a versão deve ser fornecida, sendo ela o valor de versão do projeto. 
 
 
-name: Vue.Icorp-Deploy do container baseado na versão anterior da imagem
+name: VUE.03-cs-deploy_container_versao_anterior
 
 on:
   workflow_dispatch:

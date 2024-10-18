@@ -13,7 +13,7 @@
 # Por fim, a versão deve ser fornecida, sendo ela o valor de versão do projeto. 
 
 
-name: VUE.DockerRegistry-Icorp-Deploy da imagem/container do projeto
+name: DEPRECIADO.DockerRegistry-cs-deploy_imagem_container
 on:
   workflow_dispatch:
      inputs:
