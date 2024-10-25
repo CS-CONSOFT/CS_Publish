@@ -54,9 +54,23 @@ jobs:
 
       - name: Modificando version.properties
         run: |
-          echo "Modificando version.properties com novos valores..."
-          sed -i "s/^versionCode=.*/versionCode=${{ github.event.inputs.versionCode }}/" version.properties
-          sed -i "s/^versionName=.*/versionName=${{ github.event.inputs.versionName }}/" version.properties
+            echo "Original version.properties content:"
+            cat version.properties
+            
+            
+            sed -i 's/^versionCode=.*/versionCode=${{ github.event.inputs.versionCode }}/' version.properties || echo "No match found"
+            sed -i 's/^versionName=.*/versionName=${{ github.event.inputs.versionName }}/' version.properties || echo "No match found"
+            
+            echo "Updated version.properties content:"
+            cat version.properties
+
+            
+      - name: Modificando versão no app.json
+        run: |
+          NEW_VERSION=${{ github.event.inputs.versionName }}
+          
+          # Update the version field in app.json
+          jq ".expo.version = \"$NEW_VERSION\"" app.json > temp.json && mv temp.json app.json
 
       - name: Gerar pacote
         run: |
