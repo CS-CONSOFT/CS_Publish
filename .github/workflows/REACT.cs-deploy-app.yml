@@ -3,9 +3,9 @@ on:
   workflow_dispatch:
     inputs:
       environment:
-        description: 'Escolha o ambiente: dev ou prod'
+        description: 'Escolha o ambiente: abb ou apk'
         required: true
-        default: 'prod'
+        default: 'abb'
       versionCode:
         description: 'Código de versão do aplicativo. Ex 6'
         required: true
@@ -75,7 +75,7 @@ jobs:
       - name: Gerar pacote
         run: |
           cd android
-          if [ "${{ github.event.inputs.environment }}" == "prod" ]; then
+          if [ "${{ github.event.inputs.environment }}" == "aab" ]; then
             ./gradlew bundleRelease
           else
             ./gradlew assembleRelease
@@ -86,7 +86,7 @@ jobs:
         with:
           name: cs-pvmobile-${{github.event.inputs.versionCode}}-${{github.event.inputs.versionName}}
           path: |
-            if [ "${{ github.event.inputs.environment }}" == "prod" ]; then
+            if [ "${{ github.event.inputs.environment }}" == "aab" ]; then
               android/app/build/outputs/bundle/release/app-release.aab
             else
               android/app/build/outputs/apk/release/app-release.apk
