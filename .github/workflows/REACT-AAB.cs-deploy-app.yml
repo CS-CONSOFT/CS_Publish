@@ -1,11 +1,7 @@
-name: React - Gerar pacote PV-Mobile
+name: React AAB - Gerar pacote AAB PV-Mobile
 on:
   workflow_dispatch:
     inputs:
-      environment:
-        description: 'Escolha o ambiente: abb ou apk'
-        required: true
-        default: 'abb'
       versionCode:
         description: 'Código de versão do aplicativo. Ex 6'
         required: true
@@ -75,19 +71,12 @@ jobs:
       - name: Gerar pacote
         run: |
           cd android
-          if [ "${{ github.event.inputs.environment }}" == "aab" ]; then
-            ./gradlew bundleRelease
-          else
-            ./gradlew assembleRelease
-          fi
+          ./gradlew bundleRelease
+       
 
       - name: Upload Pacote
         uses: actions/upload-artifact@v3
         with:
           name: cs-pvmobile-${{github.event.inputs.versionCode}}-${{github.event.inputs.versionName}}
           path: |
-            if [ "${{ github.event.inputs.environment }}" == "aab" ]; then
-              android/app/build/outputs/bundle/release/app-release.aab
-            else
-              android/app/build/outputs/apk/release/app-release.apk
-            fi
+           android/app/build/outputs/bundle/release/app-release.aab
