@@ -38,6 +38,9 @@ jobs:
           submodules: recursive  # Clona submódulos recursivamente
           fetch-depth: 1    # Clona todo o histórico para garantir que os commits completos estejam disponíveis
 
+      - name: 1-1-Atualiza todos os submódulos recursivamente
+        run: git submodule update --init --recursive
+
 
       - name: 02-Instalando SSH Client 
         run: sudo apt-get install openssh-client -y 
