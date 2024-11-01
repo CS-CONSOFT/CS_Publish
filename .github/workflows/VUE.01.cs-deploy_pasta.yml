@@ -19,7 +19,7 @@ on:
       branch_icorp:
         description: 'Nome da branch para se fazer o checkout do projeto CS-IcorpVue'
         required: true
-        default: 'principal'  
+        default: 'cs-homl'  
 
 env:
   NOME_PASTA: 'CS_Icorp_Tabelas-01'  
@@ -35,8 +35,8 @@ jobs:
           repository: CS-CONSOFT/CS_Icorp_Vue  # Nome do repositório
           token: ${{ secrets.ACCESS_TOKEN_GITHUB }}  # Token de acesso, caso o repositório seja privado
           ref: ${{github.event.inputs.branch_icorp}}  # Especifica a branch a ser usada
-          submodules: recursive  # Clona submódulos recursivamente
-          fetch-depth: 0    # Clona todo o histórico para garantir que os commits completos estejam disponíveis
+          #submodules: recursive  # Clona submódulos recursivamente
+          #fetch-depth: 0    # Clona todo o histórico para garantir que os commits completos estejam disponíveis
 
 
       - name: 02-Instalando SSH Client 
@@ -61,4 +61,55 @@ jobs:
       - name: 06-Transferindo projeto para instancia EC2 
         run: |
           scp -i ~/.ssh/aws_ec2_key -r ./* ubuntu@${{ secrets.AWS_EC2_INSTANCE_IP }}:/home/ubuntu/${{env.NOME_PASTA}} 
-  
+          
+      - name: 07 - Mudando para repositorio dos componentes
+        uses: actions/checkout@v4
+        with:
+          repository: CS-CONSOFT/CS_Components  # Nome do repositório
+          token: ${{ secrets.ACCESS_TOKEN_GITHUB }}  # Token de acesso, caso o repositório seja privado
+          path: cs_components  # Diretório onde o repositório será clonado
+
+      - name: 08-Deletando pasta componentes
+        run: |
+          ssh -i ~/.ssh/aws_ec2_key ubuntu@${{ secrets.AWS_EC2_INSTANCE_IP }} "rm -rf /home/ubuntu/${{env.NOME_PASTA}}/src/submodules/cs_components"
+
+     # Cria uma nova pasta no EC2 para os componentes clonados
+      - name: 08-Criando pasta para componentes no EC2
+        run: |
+          ssh -i ~/.ssh/aws_ec2_key ubuntu@${{ secrets.AWS_EC2_INSTANCE_IP }} "mkdir -p /home/ubuntu/${{env.NOME_PASTA}}/src/submodules/cs_components"
+
+      # Transfere o conteúdo do repositório CS_Components para o servidor EC2
+      - name: 09-Transferindo componentes para instancia EC2 
+        run: |
+          scp -i ~/.ssh/aws_ec2_key -r cs_components/* ubuntu@${{ secrets.AWS_EC2_INSTANCE_IP }}:/home/ubuntu/${{env.NOME_PASTA}}/src/submodules/cs_components
+      
+      - name: 10 - Mudando para repositorio dos CRM
+        uses: actions/checkout@v4
+        with:
+          repository: CS-CONSOFT/CS_Icorp_CRM  # Nome do repositório
+          token: ${{ secrets.ACCESS_TOKEN_GITHUB }}  # Token de acesso, caso o repositório seja privado
+          path: crm  # Diretório onde o repositório será clonado
+
+      - name: 11-Deletando pasta componentes
+        run: |
+          ssh -i ~/.ssh/aws_ec2_key ubuntu@${{ secrets.AWS_EC2_INSTANCE_IP }} "rm -rf /home/ubuntu/${{env.NOME_PASTA}}/src/submodules/crm"
+
+    # Cria uma nova pasta no EC2 para os componentes clonados
+      - name: 12-Criando pasta para componentes no EC2
+        run: |
+          ssh -i ~/.ssh/aws_ec2_key ubuntu@${{ secrets.AWS_EC2_INSTANCE_IP }} "mkdir -p /home/ubuntu/${{env.NOME_PASTA}}/src/submodules/crm"
+
+      # Transfere o conteúdo do repositório CS_Components para o servidor EC2
+      - name: 13-Transferindo componentes para instancia EC2 
+        run: |
+          scp -i ~/.ssh/aws_ec2_key -r crm/* ubuntu@${{ secrets.AWS_EC2_INSTANCE_IP }}:/home/ubuntu/${{env.NOME_PASTA}}/src/submodules/crm
+
+
+        
+
+
+
+
+
+
+
