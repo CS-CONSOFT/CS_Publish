@@ -39,6 +39,7 @@ jobs:
           #fetch-depth: 0    # Clona todo o histórico para garantir que os commits completos estejam disponíveis
 
 
+
       - name: 02-Instalando SSH Client 
         run: sudo apt-get install openssh-client -y 
 
