@@ -36,7 +36,7 @@ jobs:
           token: ${{ secrets.ACCESS_TOKEN_GITHUB }}  # Token de acesso, caso o repositório seja privado
           ref: ${{github.event.inputs.branch_icorp}}  # Especifica a branch a ser usada
           submodules: recursive  # Clona submódulos recursivamente
-          fetch-depth: 0    # Clona todo o histórico para garantir que os commits completos estejam disponíveis
+          fetch-depth: 1    # Clona todo o histórico para garantir que os commits completos estejam disponíveis
 
 
       - name: 02-Instalando SSH Client 
