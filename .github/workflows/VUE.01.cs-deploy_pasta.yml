@@ -71,17 +71,17 @@ jobs:
           token: ${{ secrets.ACCESS_TOKEN_GITHUB }}  # Token de acesso, caso o repositório seja privado
           path: crm  # Diretório onde o repositório será clonado
 
-      - name: 8-Deletando pasta componentes
+      - name: 8-Deletando pasta CRM
         run: |
           ssh -i ~/.ssh/aws_ec2_key ubuntu@${{ secrets.AWS_EC2_INSTANCE_IP }} "rm -rf /home/ubuntu/${{env.NOME_PASTA}}/src/submodules/crm"
 
     # Cria uma nova pasta no EC2 para os componentes clonados
-      - name: 9-Criando pasta para componentes no EC2
+      - name: 9-Criando pasta para CRM no EC2
         run: |
           ssh -i ~/.ssh/aws_ec2_key ubuntu@${{ secrets.AWS_EC2_INSTANCE_IP }} "mkdir -p /home/ubuntu/${{env.NOME_PASTA}}/src/submodules/crm"
 
       # Transfere o conteúdo do repositório CS_Components para o servidor EC2
-      - name: 10-Transferindo componentes para instancia EC2 
+      - name: 10-Transferindo CRM para instancia EC2 
         run: |
           scp -i ~/.ssh/aws_ec2_key -r crm/* ubuntu@${{ secrets.AWS_EC2_INSTANCE_IP }}:/home/ubuntu/${{env.NOME_PASTA}}/src/submodules/crm
 
